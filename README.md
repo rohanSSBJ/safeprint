@@ -1,96 +1,108 @@
-# SafePrint 🛡️📑🚀
+# SafePrint
 
-**"Your Data. Your Print. Gone Forever."**
+**A privacy-first, AI-powered campus print platform**
 
-SafePrint is a privacy-first, ephemeral file-transfer protocol designed to eliminate the digital footprint left behind by traditional printing workflows. It enables users to securely transfer sensitive documents to local print shops without ever logging into public PCs (WhatsApp Web, Email) or leaving files on shop disks.
+SafePrint solves a simple but serious problem: when students print personal documents at local shops, those files often stay behind on public computers. That creates a privacy risk and a bad user experience.
 
----
+SafePrint fixes this by giving students a safer way to print and giving shop owners smarter tools to run their business. Students can find nearby print shops, upload files securely, and pay quickly. Shop owners get live demand insights, dynamic pricing, and an AI-powered dashboard to manage operations better.
 
-## 🧐 The "Society Question"
+## The Problem
 
-When you print an Aadhaar card or a Bank Statement at a local shop, where does that data go after you leave? Most often, it's sitting in the shopkeeper's `Downloads` folder, exposed to anyone who sits at that public PC next. 
+Traditional campus print shops still work in a very manual way.
 
-**SafePrint solves this by making physical documents as ephemeral as a snap.**
+- Students do not know which shop is free and which one has a long queue.
+- Sensitive files like Aadhaar cards, bank statements, and certificates can be left on shop systems after printing.
+- Most shops still depend on cash or slow manual payment handling.
+- Shop owners do not get useful business data to predict rush hours or improve earnings.
 
----
+## Why Privacy Is Our USP
 
-## ✨ Core Features
+Privacy is the biggest reason SafePrint stands out.
 
-- **"Burn-After-Reading" Protocol**: Files are streamed through memory and permanently purged (`fs.unlink`) immediately after a single successful print. 
-- **End-to-End Security**: Documents are encrypted using **AES-256-CBC** at rest on the server.
-- **Zero-Account Trust**: No registration required. Transfers are initiated via one-time alphanumeric codes and QR codes.
-- **PDF Password Protection**: Seamlessly preview and print password-protected PDFs (like Aadhaar cards) without exposing the password to the shop owner.
-- **Anti-Screenshot Defense**: Web-app includes aggressive blur-on-focus-loss and print-screen detection during the "Hold to Reveal" preview.
-- **Business Dashboard**: A professional interface for shop owners with AI-driven traffic forecasting and dynamic pricing logic.
+Instead of sending files through random chats, email, or public desktops, SafePrint uses a secure file flow designed for printing. Files are encrypted before they are sent, used only for the print process, and removed after printing so student documents are not left behind on shop computers.
 
----
+This makes SafePrint not just a faster print solution, but a safer one.
 
-## 🛠️ The Ephemeral Workflow
+## How SafePrint Works
 
-1.  **Secure Upload**: User uploads a document; the server encrypts it using `AES-256-CBC` and stores it as a buffer in memory.
-2.  **Code Generation**: A one-time 6-digit alphanumeric code or QR is generated.
-3.  **Physical Print**: The shopkeeper inputs the code. The server decrypts the file *directly to the printer stream*.
-4.  **Auto-Purge**: The backend triggers a physical deletion (`fs.unlink`) the millisecond the print job completes or expires.
+1. A student opens SafePrint and checks nearby print shops on the live map.
+2. The student sees each shop's real-time status, like free, moderate, or busy.
+3. The file is uploaded through a secure encrypted flow.
+4. The shop receives the print request and prepares the document.
+5. The student pays using a UPI QR code at the point of service.
+6. After printing, the file is removed so no private document is left behind.
 
----
+## Features For Students
 
-## 🏗️ Tech Stack
+- Live map of nearby print shops using real-time availability
+- Secure encrypted file upload for private documents
+- Faster printing with less waiting and less confusion
+- UPI QR-based payment flow at pickup
+- Safer document handling without depending on public PCs
+- Better trust when printing important personal files
 
-| Component | Responsibility | Tech Used |
+## Features For Shop Owners
+
+- AI-powered Command Center dashboard
+- Predictive Traffic Forecaster to estimate busy hours in advance
+- Dynamic pricing that can increase rates during rush hours and offer discounts during slow hours
+- AI Shop Assistant for asking business questions in simple language
+- Live shop status controls so owners can update availability instantly
+- Business insights that help improve revenue and daily operations
+
+## Why SafePrint Wins
+
+SafePrint solves trust, speed, and revenue problems in one platform.
+
+- Students get a safer and smoother printing experience.
+- Shop owners can serve more people with less chaos.
+- Shops can make smarter pricing decisions based on real demand.
+- The platform turns local print shops into data-driven micro-businesses.
+
+## Product Stack
+
+SafePrint is built with a modern web stack that supports both secure printing and business intelligence.
+
+| Component | Purpose | Tech |
 | :--- | :--- | :--- |
-| **Frontend** | Secure UI & Interaction | React.js, Tailwind CSS, Framer Motion |
-| **Backend** | Ephemeral Streaming | Node.js, Express |
-| **Security** | Encryption & PDF decryption | `crypto`, `muhammara` |
-| **Hardware** | Direct Printer Handoff | `pdf-to-printer` |
+| Frontend | Student and shop owner experience | React 18, Tailwind CSS |
+| Backend | Print workflow and APIs | Node.js, Express |
+| Security | Client-side encryption | CryptoJS |
+| Maps | Nearby shop discovery | Leaflet.js |
+| Analytics UI | Lightweight dashboard visuals | Native SVG |
+| Printing | Printer handoff and PDF handling | `pdf-to-printer`, `muhammara` |
 
----
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
-- Node.js (v16+)
+
+- Node.js v16+
 - npm or yarn
-- A printer configured on your host machine (for backend printing)
+- A printer configured on your machine for backend printing
 
 ### Setup
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/varshithareddyallu/safeprint.git
-   cd safeprint
-   ```
+1. Clone the repository
 
-2. **Install Dependencies**:
-   ```bash
-   # Install root dependencies
-   npm install
-   
-   # Install Frontend dependencies
-   cd Frontend && npm install
-   
-   # Install Backend dependencies
-   cd ../Backend && npm install
-   ```
+```bash
+git clone https://github.com/varshithareddyallu/safeprint.git
+cd safeprint
+```
 
-3. **Run Dev Environment**:
-   ```bash
-   # From the root directory
-   npm run dev
-   ```
+2. Install dependencies
 
----
+```bash
+npm install
+cd Frontend && npm install
+cd ../backend && npm install
+```
 
-## 🛡️ Security Highlights
+3. Run the app
 
-1. **Memory Buffering**: We minimize disk-resident time by processing files as buffers.
-2. **Entropy Codes**: Randomly generated high-entropy codes that expire after a single use.
-3. **Physical Shielding**: The "Hold to Reveal" feature ensures zero visibility until the user is physically present at the shop.
+```bash
+npm run dev
+```
 
----
+## Closing Pitch
 
-## 📄 License & Credits
-
-Designed with ❤️ for the **RNSIT Innovation Lab**. 
-© 2026 SafePrint Technologies. 
-
-*Protecting the "last mile" of document sharing.*
+SafePrint brings privacy, convenience, and business intelligence to a part of campus life that has been ignored for too long. It helps students print with confidence and helps print shops grow with smarter tools.
