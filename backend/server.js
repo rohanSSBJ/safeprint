@@ -4,6 +4,7 @@ require('dotenv').config({ path: require('path').resolve(__dirname, '..', '.env.
 require('dotenv').config();
 const fileRoutes = require('./routes/fileRoutes');
 const shopRoutes = require('./routes/shopRoutes');
+const { cleanupExpiredJobs } = require('./lib/printJobCleanup');
 
 const app = express();
 app.use(cors({
@@ -14,8 +15,14 @@ app.use(cors({
 }));
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.json({ ok: true, service: 'safeprint-backend' });
+app.get('/', async (req, res) => {
+  try {
+    const cleanup = await cleanupExpiredJobs();
+    res.json({ ok: true, service: 'safeprint-backend', cleanup });
+  } catch (err) {
+    console.error('Health cleanup failed:', err);
+    res.json({ ok: true, service: 'safeprint-backend', cleanup: null });
+  }
 });
 
 app.use('/api/files', fileRoutes);

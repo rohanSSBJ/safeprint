@@ -7,12 +7,12 @@ const os = require('os');
 const mime = require('mime-types');
 const muhammara = require('muhammara');
 const supabase = require('../lib/supabaseClient');
+const { BUCKET, cleanupExpiredJobs, deleteJob, fetchJob } = require('../lib/printJobCleanup');
 const shopRoutes = require('./shopRoutes');
 
 const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
-const BUCKET = 'safeprint-files';
 const JOB_TTL_MS = 10 * 60 * 1000;
 
 function getUploadedFiles(req) {
@@ -27,33 +27,6 @@ function setPreviewHeaders(res, fileData) {
     'Cache-Control': 'no-store, no-cache, must-revalidate, private',
   });
   return mimeType;
-}
-
-async function fetchJob(code) {
-  const { data: job, error: jobError } = await supabase
-    .from('print_jobs')
-    .select('code, comment, expires_at, print_job_files(*)')
-    .eq('code', code)
-    .maybeSingle();
-
-  if (jobError) throw jobError;
-  if (!job) return null;
-
-  const files = (job.print_job_files || []).sort((a, b) => a.file_index - b.file_index);
-  return { ...job, files };
-}
-
-async function deleteJob(code, files = null) {
-  const jobFiles = files || (await fetchJob(code))?.files || [];
-  const paths = jobFiles.map((file) => file.storage_path).filter(Boolean);
-
-  if (paths.length > 0) {
-    const { error: removeError } = await supabase.storage.from(BUCKET).remove(paths);
-    if (removeError) console.error('Supabase storage cleanup failed:', removeError);
-  }
-
-  const { error: deleteError } = await supabase.from('print_jobs').delete().eq('code', code);
-  if (deleteError) console.error('Supabase job cleanup failed:', deleteError);
 }
 
 async function requireActiveJob(code) {
@@ -122,6 +95,8 @@ async function createJobCode() {
 }
 
 router.post('/upload', upload.any(), async (req, res) => {
+  await cleanupExpiredJobs();
+
   const files = getUploadedFiles(req);
   if (files.length === 0) {
     return res.status(400).json({ error: 'No files uploaded' });
@@ -212,6 +187,7 @@ router.post('/upload', upload.any(), async (req, res) => {
 
 router.get('/info/:code', async (req, res) => {
   try {
+    await cleanupExpiredJobs();
     const code = req.params.code.toLowerCase();
     const job = await requireActiveJob(code);
 
@@ -235,6 +211,7 @@ router.get('/info/:code', async (req, res) => {
 
 router.get('/download/:code/:index', async (req, res) => {
   try {
+    await cleanupExpiredJobs();
     const code = req.params.code.toLowerCase();
     const index = parseInt(req.params.index, 10);
     const job = await requireActiveJob(code);
@@ -262,8 +239,19 @@ router.get('/download/:code', async (req, res) => {
   res.redirect(`/api/files/download/${code}/0`);
 });
 
+router.get('/cleanup-expired', async (req, res) => {
+  try {
+    const result = await cleanupExpiredJobs();
+    res.json({ success: true, ...result });
+  } catch (err) {
+    console.error('Expired job cleanup failed:', err);
+    res.status(500).json({ error: 'Could not clean expired jobs' });
+  }
+});
+
 router.post('/print/:code', async (req, res) => {
   try {
+    await cleanupExpiredJobs();
     const code = req.params.code.toLowerCase();
     const { shopId } = req.body || {};
     const job = await requireActiveJob(code);
