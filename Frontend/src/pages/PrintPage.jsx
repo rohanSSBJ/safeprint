@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Scanner } from '@yudiel/react-qr-scanner';
-import { Printer, Loader2, CheckCircle2, IndianRupee, Eye, ChevronLeft, ShieldAlert, Store } from 'lucide-react';
+import { Printer, Loader2, CheckCircle2, IndianRupee, Eye, ChevronLeft, ShieldAlert, Store, FileText } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { API_BASE_URL } from '../config';
 import PdfCanvasViewer from '../components/PdfCanvasViewer';
+import DocxPreviewViewer from '../components/DocxPreviewViewer';
 
 const PrintPage = () => {
   const [code, setCode] = useState(() => new URLSearchParams(window.location.search).get('code') || '');
@@ -20,6 +21,10 @@ const PrintPage = () => {
   const [previewContentType, setPreviewContentType] = useState('');
   const [selectedFileIndex, setSelectedFileIndex] = useState(null);
   const [isSecureBlanked, setIsSecureBlanked] = useState(false);
+
+  const isImagePreview = previewContentType.includes('image');
+  const isPdfPreview = previewContentType.includes('application/pdf');
+  const isDocxPreview = previewContentType.includes('officedocument.wordprocessingml.document');
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -333,10 +338,20 @@ const PrintPage = () => {
                       </div>
                     )}
                     <div className={`w-full h-full transition-opacity duration-75 ${isSecureBlanked ? 'opacity-0' : 'opacity-100'}`}>
-                      {previewContentType.includes('image') ? (
+                      {isImagePreview ? (
                         <img src={previewUrl} alt="Secure Doc" className="w-full h-full object-contain pointer-events-none" />
-                      ) : (
+                      ) : isPdfPreview ? (
                         <PdfCanvasViewer url={previewUrl} />
+                      ) : isDocxPreview ? (
+                        <DocxPreviewViewer url={previewUrl} />
+                      ) : (
+                        <div className="flex h-full flex-col items-center justify-center px-6 text-center text-slate-500">
+                          <FileText className="mb-3 h-10 w-10 text-slate-400" />
+                          <p className="text-sm font-bold text-slate-700">Preview unavailable for this file type</p>
+                          <p className="mt-2 max-w-sm text-xs leading-5">
+                            Word .doc files need server-side conversion before the browser can preview them. You can still print the file securely.
+                          </p>
+                        </div>
                       )}
                     </div>
                   </div>
