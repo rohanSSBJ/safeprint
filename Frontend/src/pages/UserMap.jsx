@@ -4,7 +4,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 import { SERVER_URL } from '../config';
-import { MapPin, Search, Navigation, ChevronRight } from 'lucide-react';
+import { MapPin, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 // Fix Leaflet icon issue
@@ -45,6 +45,20 @@ const statusLabels = {
   moderate: 'Moderate Wait',
   busy: 'Very Busy (~15m)',
   closed: 'Closed'
+};
+
+const openUploadForShop = (navigate, shop) => {
+  navigate('/upload', {
+    state: {
+      selectedShop: {
+        id: shop.id,
+        name: shop.name,
+        address: shop.address,
+        status: shop.status,
+        upiId: shop.upiId,
+      },
+    },
+  });
 };
 
 const RecenterMap = ({ location }) => {
@@ -117,7 +131,7 @@ const UserMap = () => {
                 <div 
                   key={shop.id} 
                   className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:border-indigo-500/50 transition-all group cursor-pointer"
-                  onClick={() => setUserLocation(shop.location)}
+                  onClick={() => openUploadForShop(navigate, shop)}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="text-white font-bold text-sm group-hover:text-indigo-400 transition-colors uppercase tracking-tight">{shop.name}</h3>
@@ -140,8 +154,14 @@ const UserMap = () => {
                       }`}>
                         {statusLabels[shop.status]}
                       </span>
-                      <button className="text-indigo-500 text-[10px] font-bold flex items-center gap-1 hover:text-indigo-400 transition-colors">
-                        View <ChevronRight className="w-3 h-3" />
+                      <button
+                        className="text-indigo-500 text-[10px] font-bold flex items-center gap-1 hover:text-indigo-400 transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openUploadForShop(navigate, shop);
+                        }}
+                      >
+                        Upload <ChevronRight className="w-3 h-3" />
                       </button>
                   </div>
                 </div>
@@ -196,7 +216,7 @@ const UserMap = () => {
                         {statusLabels[shop.status]}
                       </span>
                       {shop.status !== 'closed' && (
-                        <button onClick={() => navigate('/upload')} className="bg-slate-900 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-slate-800 transition">
+                        <button onClick={() => openUploadForShop(navigate, shop)} className="bg-slate-900 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-slate-800 transition">
                           Upload File
                         </button>
                       )}

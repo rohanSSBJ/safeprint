@@ -29,3 +29,7 @@ Thumbs.db
 # Local exported assets
 *.pptx
 *.png
+
+#pdfs
+
+*.pdf

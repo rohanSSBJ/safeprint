@@ -2,6 +2,49 @@ const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
 
+const demoShops = [
+  {
+    id: 'demo-shop-campus-hub',
+    name: 'Campus Print Hub',
+    address: 'Main Road, Gachibowli, Hyderabad',
+    location: [17.4432, 78.3518],
+    status: 'free',
+    upiId: 'campusprinthub@upi',
+  },
+  {
+    id: 'demo-shop-xerox-point',
+    name: 'Xerox Point Express',
+    address: 'DLF Street, Gachibowli, Hyderabad',
+    location: [17.4379, 78.3446],
+    status: 'moderate',
+    upiId: 'xeroxpointexpress@upi',
+  },
+  {
+    id: 'demo-shop-study-lane',
+    name: 'Study Lane Prints',
+    address: 'Indira Nagar, Telecom Nagar, Hyderabad',
+    location: [17.4471, 78.3583],
+    status: 'busy',
+    upiId: 'studylaneprints@upi',
+  },
+  {
+    id: 'demo-shop-quick-copy',
+    name: 'Quick Copy Corner',
+    address: 'Near Botanical Garden Road, Kondapur, Hyderabad',
+    location: [17.4328, 78.3634],
+    status: 'free',
+    upiId: 'quickcopycorner@upi',
+  },
+  {
+    id: 'demo-shop-night-owl',
+    name: 'Night Owl Prints',
+    address: 'Anjaiah Nagar, Gachibowli, Hyderabad',
+    location: [17.4394, 78.3401],
+    status: 'closed',
+    upiId: 'nightowlprints@upi',
+  },
+];
+
 // In-memory "database" for MVP
 // Shop: { id, name, location: [lat, lng], address, status, ownerEmail, password, upiId }
 let shops = [];
@@ -90,7 +133,9 @@ router.get('/nearby', (req, res) => {
   const targetLat = parseFloat(lat);
   const targetLng = parseFloat(lng);
   
-  let nearbyShops = shops.map(s => ({
+  const allShops = [...demoShops, ...shops];
+
+  let nearbyShops = allShops.map(s => ({
     id: s.id,
     name: s.name,
     address: s.address,

@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { QRCodeCanvas } from 'qrcode.react';
-import { Upload, ShieldCheck, Lock, Unlock, FileText, MessageSquare, Check, Copy, Loader2, X, ArrowRight, Printer } from 'lucide-react';
+import { Upload, ShieldCheck, Lock, Unlock, FileText, MessageSquare, Check, Copy, Loader2, X, ArrowRight, Printer, MapPin } from 'lucide-react';
 import { API_BASE_URL } from '../config';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const AppPage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const [comment, setComment] = useState('');
   const [uploadCode, setUploadCode] = useState('');
@@ -12,6 +15,7 @@ const AppPage = () => {
   const [downloadUrl, setDownloadUrl] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const selectedShop = location.state?.selectedShop || null;
 
   const handleFilesSelected = (e) => {
     const selectedFiles = Array.from(e.target.files);
@@ -108,8 +112,8 @@ const AppPage = () => {
           <span className="text-2xl font-extrabold text-slate-900 tracking-tight">Safe<span className="text-indigo-600">Print</span></span>
         </div>
         <div className="flex items-center gap-4">
-           <a href="/nearby" className="text-sm font-semibold text-slate-500 hover:text-indigo-600 transition">Find Shops</a>
-           <a href="/business" className="text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition px-5 py-2.5 rounded-xl shadow-md shadow-indigo-500/20">Partner Login</a>
+           <button onClick={() => navigate('/nearby')} className="text-sm font-semibold text-slate-500 hover:text-indigo-600 transition">Find Shops</button>
+           <button onClick={() => navigate('/business')} className="text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition px-5 py-2.5 rounded-xl shadow-md shadow-indigo-500/20">Partner Login</button>
         </div>
       </nav>
 
@@ -129,6 +133,28 @@ const AppPage = () => {
         )}
 
         <div className="w-full max-w-xl">
+          {selectedShop && !uploadCode && (
+            <div className="mb-5 flex items-start justify-between gap-4 rounded-2xl border border-indigo-200 bg-white/90 px-5 py-4 shadow-lg shadow-indigo-100/40">
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 rounded-xl bg-indigo-100 p-2 text-indigo-600">
+                  <MapPin className="w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">Selected Print Shop</p>
+                  <h2 className="mt-1 text-base font-bold text-slate-900">{selectedShop.name}</h2>
+                  <p className="mt-1 text-sm text-slate-500">{selectedShop.address || 'Address not provided'}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => navigate('/nearby')}
+                className="shrink-0 rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-indigo-200 hover:text-indigo-600"
+              >
+                Change Shop
+              </button>
+            </div>
+          )}
+
           <div className="bg-white border border-slate-200 rounded-3xl shadow-xl shadow-slate-200/50 p-8 relative overflow-hidden transition-all duration-500">
             {/* Top accent */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-indigo-400 to-emerald-400" />

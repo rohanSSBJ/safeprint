@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Iterable
 
@@ -48,6 +49,35 @@ ASSETS = {
 }
 
 
+SOURCES = [
+    {
+        "label": "Microsoft Universal Print Anywhere",
+        "url": "https://techcommunity.microsoft.com/blog/windows-itpro-blog/pull-print-is-now-available-in-universal-print/4441608",
+        "note": "Secure pull printing reduces unattended confidential documents and paper waste.",
+    },
+    {
+        "label": "NIST SP 800-88 Rev. 1",
+        "url": "https://csrc.nist.gov/pubs/sp/800/88/r1/final",
+        "note": "Media sanitization guidance for rendering access to target data infeasible.",
+    },
+    {
+        "label": "World Bank: South Asia's Digital Opportunity",
+        "url": "https://www.worldbank.org/en/topic/digital/publication/south-asia-s-digital-opportunity-accelerating-growth-transforming-lives",
+        "note": "Digitalization can reduce transaction costs, expand services and markets, and improve quality of life.",
+    },
+    {
+        "label": "OpenPrinting CUPS",
+        "url": "https://github.com/OpenPrinting/cups",
+        "note": "Standards-based open-source printing stack with PDF and IPP support.",
+    },
+    {
+        "label": "PaperCut GhostTrap",
+        "url": "https://github.com/PaperCutSoftware/GhostTrap",
+        "note": "Sandboxed processing of untrusted PDF/PostScript inputs.",
+    },
+]
+
+
 CONTENT = {
     "partner_tags": ["K-tech", "IIIT Dharwad", "Govt. of Karnataka", "Research Park", "Startup Karnataka"],
     "startup_name": "SafePrint",
@@ -57,17 +87,17 @@ CONTENT = {
     "submission_date": "Pitching Submission Date: 13 Apr 2026",
     "problem": {
         "problem_statement": [
-            "Students often print personal files on public shop systems where documents can be copied, cached, or forgotten.",
-            "Campus-area print shops still operate manually, which creates queue uncertainty, payment friction, and weak trust.",
+            "People often print Aadhaar cards, marks cards, bank statements, resumes, legal papers, and other personal files on public shop systems where documents can be copied, cached, or forgotten.",
+            "Most neighborhood print flows still rely on pen drives, email, or chats, which creates queue uncertainty, payment friction, and weak trust.",
         ],
         "customer_segment": [
-            "Primary users: college students printing IDs, certificates, forms, resumes, and financial documents.",
-            "Secondary users: nearby print-shop owners who need a smoother order intake and better daily operations.",
+            "Primary users: privacy-conscious people printing sensitive personal or professional documents, including students, job seekers, families, and working professionals.",
+            "Business users: neighborhood print-shop owners who need cleaner order intake, better queue visibility, and fewer manual follow-ups.",
         ],
         "market": [
-            "TAM: student and academic document printing market across Indian campuses.",
-            "SAM: tech-enabled campus and college-nearby print shops in target cities.",
-            "SOM: first set of partner print shops and recurring student users acquired through pilot campuses.",
+            "TAM: the broader unorganized print-shop and document-service market handling personal, academic, professional, and business print demand.",
+            "SAM: digitally reachable print shops and document centers that can adopt a lightweight privacy-first workflow without hardware-heavy changes.",
+            "SOM: the realistic share SafePrint can win through partner-shop rollout, city clusters, and repeat privacy-conscious users across the wider print industry.",
         ],
         "competition": [
             "Local print shops using walk-in or pen-drive based workflows.",
@@ -77,28 +107,29 @@ CONTENT = {
     },
     "solution": {
         "solution_summary": [
-            "SafePrint lets students discover nearby shops, upload documents securely, place print requests, and complete pickup with less waiting and more trust.",
-            "For shop owners, SafePrint adds live queue visibility, demand insights, and a workflow that is easier to manage than manual file handling.",
+            "SafePrint gives people a privacy-first print flow: discover a shop, upload securely, send a print request, collect the job, and avoid leaving documents behind on public systems.",
+            "For shop owners, SafePrint replaces messy manual intake with live queue visibility, cleaner order handling, and demand-aware operations.",
         ],
         "benefits": [
-            "Students save time, avoid repeated trips, and reduce the risk of sensitive files being left on public systems.",
-            "Print shops handle more orders with better predictability, smoother intake, and fewer operational bottlenecks.",
+            "Users save time, avoid repeated trips, and reduce the risk of sensitive files being exposed on shared desktops.",
+            "Print shops handle more orders with better predictability, smoother intake, and less counter-side chaos.",
         ],
         "differentiators": [
             "Privacy-first document handling is the core product promise rather than an afterthought.",
-            "The platform combines secure upload, shop discovery, live status, payments, and owner-side intelligence in one flow.",
+            "Enterprise pull-print systems already prove that secure release matters; SafePrint brings a similar trust model to neighborhood print shops.",
+            "The platform combines secure upload, shop discovery, live status, payments, and owner-side intelligence in one lightweight flow.",
         ],
     },
     "assumptions": {
         "left": [
-            "Students will prefer a trusted digital flow over sharing files through random chats or pen drives.",
-            "Campus print shops are willing to adopt a lightweight dashboard if it improves throughput and trust.",
+            "Privacy-conscious users will prefer a trusted digital flow over sharing files through random chats or pen drives.",
+            "Neighborhood print shops will adopt a lightweight dashboard if it improves throughput and trust without extra hardware on day one.",
             "A browser-based workflow is enough for early pilots before deeper printer automation.",
         ],
         "right": [
             "We considered WhatsApp-only ordering, kiosk-first ordering, and fully manual shop-side coordination.",
             "The current approach won because it is easier to pilot, gives better privacy control, and creates reusable data for owner analytics.",
-            "We can phase automation incrementally instead of forcing hardware-heavy adoption on day one.",
+            "Post-print cleanup should follow a sanitization mindset, not simple file deletion, especially for sensitive personal documents.",
         ],
     },
     "bom": {
@@ -113,7 +144,7 @@ CONTENT = {
         "justification": [
             "Cloud spend covers application hosting, secure file handling, monitoring, and usage growth during pilots.",
             "Travel is necessary for onboarding print partners, validating operations on-site, and maintaining pilot momentum.",
-            "Pilot allocation covers deployment support, troubleshooting, demos, and operational readiness before scale-up.",
+            "Pilot allocation covers deployment support, troubleshooting, demos, operational readiness, and trust-building with early partners.",
         ],
     },
     "timeline": {
@@ -142,28 +173,29 @@ CONTENT = {
         ],
     },
     "impact": [
-        "SafePrint improves privacy for students by reducing dependence on public desktops and unmanaged file sharing.",
+        "SafePrint improves privacy for anyone handling sensitive documents by reducing dependence on public desktops and unmanaged file sharing.",
         "It helps local print shops become more digital, predictable, and easier to trust.",
-        "Smarter routing and better queue visibility reduce wasted trips, idle waiting, and operating inefficiency.",
+        "This fits the wider regional digitalization push where lower transaction costs and better market access create real everyday value.",
     ],
     "patent": [
         "Potential IP may emerge around privacy-preserving print request orchestration, secure document lifecycle handling, and shop-side release flows.",
-        "The project also has scope for publication or conference presentation around campus micro-commerce and operational digitization.",
+        "The project also has scope for publication or conference presentation around privacy-aware neighborhood services, document security, and operational digitization.",
     ],
     "startup": {
         "why": [
-            "SafePrint solves a real campus pain point that combines privacy, convenience, and business enablement.",
-            "The model can expand from one college cluster to multiple campuses with a repeatable partner onboarding playbook.",
+            "SafePrint solves a real everyday privacy problem that combines convenience, trust, and business enablement.",
+            "India's digital-payment and digital-service behavior lowers adoption friction for a pickup-and-pay workflow.",
+            "Campuses are the easiest beachhead, but the same model can expand to neighborhoods, service centers, and document-heavy local workflows.",
         ],
         "first_customers": [
-            "Start with pilot print shops around one or two campuses and onboard students through hostels, class reps, and launch demos.",
-            "Use early partner offers, referral loops, and visible trust messaging to win the first 10 recurring student customers.",
+            "Start with pilot print shops around one or two campuses and nearby neighborhoods, then onboard users through hostels, apartments, offices, and launch demos.",
+            "Use early partner offers, referral loops, and visible trust messaging to win the first 10 recurring privacy-conscious customers.",
         ],
     },
     "product_sections": [
-        "Architecture Diagram Placeholder",
-        "Workflow / Operations Diagram Placeholder",
-        "Screenshots and Dashboard Placeholder",
+        "Encrypted Upload + Access Control Placeholder",
+        "Shop Workflow + Secure Release Placeholder",
+        "Student App + Owner Dashboard Placeholder",
     ],
     "thank_you": "Thank You",
     "contact": "safeprint.team@iiitdwd.ac.in",
@@ -450,6 +482,74 @@ def add_picture_or_placeholder(slide, area: Area, asset_path: str | None, label:
         add_placeholder_card(slide, area, label, "Replace this placeholder with the final asset.")
 
 
+def add_market_diagram(slide) -> None:
+    circle_specs = [
+        ("TAM", "Total Addressable\nMarket", 1.62, 4.72, 2.95, RGBColor(68, 109, 176)),
+        ("SAM", "Serviceable\nAddressable Market", 2.14, 5.24, 1.92, RGBColor(88, 144, 214)),
+        ("SOM", "Serviceable\nObtainable Market", 2.71, 5.81, 0.78, RGBColor(100, 180, 244)),
+    ]
+    for label, subtitle, left, top, size, fill_color in circle_specs:
+        circle = slide.shapes.add_shape(
+            MSO_AUTO_SHAPE_TYPE.OVAL,
+            Inches(left),
+            Inches(top),
+            Inches(size),
+            Inches(size),
+        )
+        circle.fill.solid()
+        circle.fill.fore_color.rgb = fill_color
+        circle.line.color.rgb = RGBColor(255, 255, 255)
+        circle.line.width = Pt(1.6)
+        add_textbox(
+            slide,
+            Area(left + 0.2, top + size / 2 - 0.42, size - 0.4, 0.3),
+            label,
+            font_size=15 if label != "SOM" else 14,
+            bold=True,
+            color=RGBColor(255, 255, 255),
+            align=PP_ALIGN.CENTER,
+        )
+        add_textbox(
+            slide,
+            Area(left + 0.18, top + size / 2 - 0.08, size - 0.36, 0.52),
+            subtitle,
+            font_size=9.5 if label != "SOM" else 8.8,
+            color=RGBColor(255, 255, 255),
+            align=PP_ALIGN.CENTER,
+        )
+
+    callouts = [
+        ("TAM", CONTENT["problem"]["market"][0].replace("TAM: ", ""), 8.58, 4.84, 2.76, 0.74, 4.55, 5.28, 8.58, 5.21),
+        ("SAM", CONTENT["problem"]["market"][1].replace("SAM: ", ""), 8.58, 5.72, 2.76, 0.84, 4.06, 5.95, 8.58, 6.08),
+        ("SOM", CONTENT["problem"]["market"][2].replace("SOM: ", ""), 8.58, 6.7, 2.76, 0.88, 3.49, 6.29, 8.58, 7.02),
+    ]
+    for title, body, left, top, width, height, line_x1, line_y1, line_x2, line_y2 in callouts:
+        add_line(slide, line_x1, line_y1, line_x2, line_y2, RGBColor(247, 180, 40), 1.25)
+        card = add_rect(
+            slide,
+            Area(left, top, width, height),
+            RGBColor(223, 237, 255),
+            RGBColor(247, 180, 40),
+            radius=True,
+        )
+        card.line.width = Pt(1.3)
+        add_textbox(
+            slide,
+            Area(left + 0.12, top + 0.06, width - 0.24, 0.18),
+            title,
+            font_size=12.5,
+            bold=True,
+            color=THEME["colors"]["text"],
+        )
+        add_textbox(
+            slide,
+            Area(left + 0.12, top + 0.24, width - 0.24, height - 0.24),
+            body,
+            font_size=10.2,
+            color=THEME["colors"]["text"],
+        )
+
+
 def build_cover(slide) -> None:
     set_slide_background(slide)
     add_partner_row(slide, top=0.86, centered=True)
@@ -530,16 +630,18 @@ def build_problem(slide) -> None:
     add_line(slide, 1.65, 4.33, 12.02, 4.33, THEME["colors"]["muted"], 1.2)
     add_bullets(slide, Area(2.0, 2.35, 3.95, 1.7), CONTENT["problem"]["problem_statement"], font_size=18)
     add_bullets(slide, Area(7.15, 2.52, 4.2, 1.6), CONTENT["problem"]["customer_segment"], font_size=18)
-    add_bullets(slide, Area(2.0, 4.98, 3.95, 1.2), CONTENT["problem"]["market"], font_size=18)
-    add_bullets(slide, Area(7.15, 4.78, 4.25, 1.45), CONTENT["problem"]["competition"], font_size=18)
+    add_market_diagram(slide)
+    add_bullets(slide, Area(7.05, 4.76, 4.35, 1.55), CONTENT["problem"]["competition"], font_size=18)
 
 
 def build_two_column(slide, title: str, number: int, left_items: list[str], right_items: list[str], left_width=3.55):
     add_common_shell(slide, title, number)
     divider_x = 6.57
     add_line(slide, divider_x, 2.45, divider_x, 5.85, THEME["colors"]["muted"], 1.2)
-    add_bullets(slide, Area(2.75, 3.05, left_width, 2.15), left_items, font_size=20)
-    add_bullets(slide, Area(6.95, 2.42, 4.45, 2.75), right_items, font_size=19)
+    left_font = 18 if len(left_items) > 2 else 20
+    right_font = 17 if len(right_items) > 3 else 19
+    add_bullets(slide, Area(2.75, 3.05, left_width, 2.15), left_items, font_size=left_font)
+    add_bullets(slide, Area(6.95, 2.42, 4.45, 2.75), right_items, font_size=right_font)
 
 
 def build_product(slide) -> None:
@@ -866,6 +968,15 @@ def build_markdown() -> str:
         else:
             lines.append("  - This slide is fully generated from text and shape primitives, so no external assets are required.")
         lines.append("")
+    lines.extend(
+        [
+            "## Trusted Sources Used",
+            "",
+        ]
+    )
+    for source in SOURCES:
+        lines.append(f"- [{source['label']}]({source['url']}): {source['note']}")
+    lines.append("")
     return "\n".join(lines)
 
 
@@ -880,9 +991,16 @@ def build_presentation() -> Presentation:
 
 def main() -> None:
     prs = build_presentation()
-    prs.save(OUTPUT_PPTX)
+    pptx_path = Path(OUTPUT_PPTX)
+    try:
+        prs.save(pptx_path)
+        final_pptx = pptx_path
+    except PermissionError:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        final_pptx = Path(f"SafePrint_Pitch_Deck_Generated_{timestamp}.pptx")
+        prs.save(final_pptx)
     Path(OUTPUT_MD).write_text(build_markdown(), encoding="utf-8")
-    print(f"Generated {OUTPUT_PPTX}")
+    print(f"Generated {final_pptx}")
     print(f"Generated {OUTPUT_MD}")
 
 
