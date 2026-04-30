@@ -67,7 +67,7 @@ const AppPage = () => {
       const res = await axios.post(`${API_BASE_URL}/upload`, formData);
       setUploadCode(res.data.code);
       const baseUrl = window.location.origin;
-      setDownloadUrl(`${baseUrl}/print?code=${res.data.code}`);
+      setDownloadUrl(`${baseUrl}/business/print?code=${res.data.code}`);
       setUploadStatus('Transfer Complete');
     } catch (err) {
       console.error(err);

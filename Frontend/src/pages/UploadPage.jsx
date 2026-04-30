@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { QRCodeCanvas } from 'qrcode.react';
+import { API_BASE_URL, SERVER_URL } from '../config';
 
 
 const UploadPage = () => {
@@ -16,21 +17,18 @@ const UploadPage = () => {
   }
 
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append('files', file);
 
   try {
     setStatus('Uploading...');
     console.log("Sending upload request...");
 
-    const res = await axios.post(
-      "https://safeprint-backend.onrender.com/api/files/upload",
-      formData
-    );
+    const res = await axios.post(`${API_BASE_URL}/upload`, formData);
 
     console.log("Upload response:", res.data);
 
     setCode(res.data.code);
-    setDownloadUrl(`https://safeprint-backend.onrender.com/download/${res.data.code}`);
+    setDownloadUrl(`${SERVER_URL}/business/print?code=${res.data.code}`);
     setStatus('File uploaded successfully.');
   } catch (err) {
     console.error("UPLOAD ERROR:", err);

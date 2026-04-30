@@ -7,7 +7,7 @@ import { API_BASE_URL } from '../config';
 import PdfCanvasViewer from '../components/PdfCanvasViewer';
 
 const PrintPage = () => {
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState(() => new URLSearchParams(window.location.search).get('code') || '');
   const [status, setStatus] = useState('');
   const [showScanner, setShowScanner] = useState(false);
   const [isPrinting, setIsPrinting] = useState(false);
@@ -89,8 +89,15 @@ const PrintPage = () => {
       setIsPrinting(true);
       setPrintResult(null);
       setStatus('Sending all files to printer...');
-      
-      await axios.post(`${API_BASE_URL}/print/${code}`);
+
+      let shopId = null;
+      try {
+        shopId = JSON.parse(localStorage.getItem('safeprint_shop_session') || '{}').id || null;
+      } catch {
+        shopId = null;
+      }
+
+      const response = await axios.post(`${API_BASE_URL}/print/${code}`, { shopId });
       
       const baseRate = 2.0;
       const surgeMultiplier = 1.15;
@@ -100,7 +107,7 @@ const PrintPage = () => {
       const upiId = "partner@upi";
       const upiLink = `upi://pay?pa=${upiId}&pn=SafePrint%20Partner&am=${totalAmount}&cu=INR`;
 
-      setCheckoutData({
+      setCheckoutData(response.data.checkoutData || {
         amount: totalAmount,
         upiLink: upiLink,
         pages: assumedPages,
@@ -157,6 +164,14 @@ const PrintPage = () => {
       setBatchInfo(null);
     }
   };
+
+  useEffect(() => {
+    const urlCode = new URLSearchParams(window.location.search).get('code');
+    if (urlCode) {
+      setCode(urlCode);
+      fetchInfoDirect(urlCode);
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-slate-50 font-sans">
